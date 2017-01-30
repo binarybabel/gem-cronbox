@@ -1,0 +1,55 @@
+#!/usr/bin/env ruby
+
+require 'bundler/setup'
+require 'optparse'
+require 'cronbox'
+
+options = {}
+
+opparser = OptionParser.new do |opts|
+  opts.banner = [
+      '',
+      'Cronbox Usage          https://git.io/cronbox',
+      '---------------------------------------------',
+      '  Query: cb [-e]',
+      '    Run: cb [-l LABEL] RUN_CMD [CMD_ARGS]',
+      '---------------------------------------------',
+      '',
+      " Version: #{::Cronbox::VERSION}",
+      ' Options:'
+  ].join("\n")
+  opts.on('-f DATA_FILE', '--file DATA_FILE', 'Data file, default: $HOME/.cronbox') do |v|
+    options[:file] = v
+  end
+  opts.on('-e', '--errors', 'Report errors only, with log output') do
+    options[:report] = 'errors'
+  end
+  opts.on('-l LABEL', '--label NAME', 'Store run-command with label') do |v|
+    options[:label] = v
+  end
+  opts.on('-o ID_OR_NAME', '--output ID_OR_NAME', 'Report command full output') do |v|
+    options[:output] = v
+  end
+  opts.on('-d ID_OR_NAME', '--delete ID_OR_NAME', 'Remove cronbox entry') do |v|
+    options[:delete] = v
+  end
+end
+opparser.parse!
+
+file = options[:file]
+options.delete(:file)
+
+@app = Cronbox.new(file)
+@cli = Cronbox::CliWrapper.new(@app)
+
+if ARGV.empty? and (options.empty? or options[:report])
+  @cli.report(options[:report])
+elsif ARGV.size > 0
+  @app.execute(options[:label], ARGV.shift, *ARGV)
+elsif options[:output]
+  @cli.report(true, [options[:output]])
+elsif options[:delete]
+  @cli.delete(options[:delete])
+else
+  puts opparser.help
+end
