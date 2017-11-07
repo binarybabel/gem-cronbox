@@ -10,7 +10,7 @@ Gem::Specification.new do |spec|
   spec.email         = ['oss@binarybabel.org']
 
   spec.summary       = 'Command-line inbox and timecard for scheduled job status and output.'
-  spec.homepage      = 'https://github.com/binarybabel/cronbox'
+  spec.homepage      = 'https://github.com/binarybabel/gem-cronbox'
   spec.license       = 'MIT'
 
   spec.files         = `git ls-files -z`.split("\x0").reject do |f|
@@ -22,8 +22,8 @@ Gem::Specification.new do |spec|
 
   spec.files += ['version.lock']
   spec.add_dependency 'versioneer'
+  spec.add_dependency 'bundler', '~> 1.0'
 
-  spec.add_development_dependency 'bundler', '~> 1.13'
   spec.add_development_dependency 'rake', '~> 10.0'
   spec.add_development_dependency 'minitest', '~> 5.0'
   #spec.add_development_dependency 'pry', '~> 0.10.0'
